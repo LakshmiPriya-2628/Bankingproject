@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NovaBank Net Banking</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%230f9d8f'/%3E%3Cpath d='M13 36V12h4.6l9.8 14.2V12H32v24h-4.6L17.6 21.8V36z' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root{--nv:#0a2540;--nv2:#143a63;--tl:#0f9d8f;--tlL:#e2f6f3;--bg:#f2f6fa;--tx:#14233a;--mut:#56677d;--bd:#d5e0ea;--rd:#b42318;--rdL:#fdecea}
+*{box-sizing:border-box;margin:0}
+body{font:16px/1.55 system-ui,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx)}
+h1{font-size:1.5rem;color:var(--nv)}h2{font-size:1.1rem;color:var(--nv);margin-bottom:12px}.sub{color:var(--mut);margin:2px 0 18px}
+[hidden]{display:none!important}
+.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.hero{background:radial-gradient(circle at 85% 12%,#0f9d8f66,transparent 45%),radial-gradient(circle at 10% 95%,#5eead433,transparent 40%),linear-gradient(145deg,var(--nv),var(--nv2));color:#fff;padding:60px 8%;display:flex;flex-direction:column;justify-content:center}
+.logo{font-size:1.8rem;font-weight:800;display:flex;align-items:center;gap:10px}.lg{width:44px;height:44px;flex:none}.top .lg{width:34px;height:34px}.logo span{color:#5eead4}
+.hero h2{color:#fff;font-size:2.5rem;line-height:1.2;margin:28px 0 12px}.hero em{color:#5eead4;font-style:normal}.hero p{color:#c6d6e8;max-width:420px}
+.stats{display:flex;gap:24px;margin-top:24px;flex-wrap:wrap}.stats b{display:block;font-size:1.3rem;color:#5eead4}.stats div{font-size:.8rem;color:#c6d6e8}
+.vcard{margin-top:30px;width:300px;max-width:100%;aspect-ratio:1.6;border-radius:18px;padding:18px 20px;background:linear-gradient(135deg,#0f9d8f,#143a63);box-shadow:0 20px 40px #0006;transform:rotate(-4deg);animation:fl 5s ease-in-out infinite;display:flex;flex-direction:column;justify-content:space-between}
+.vcard .lg{width:30px;height:30px}.chip{width:40px;height:30px;border-radius:6px;background:linear-gradient(135deg,#f5d77a,#c9a227)}
+.cn{letter-spacing:2px;font-size:1.05rem}.cr{display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:1px}
+@keyframes fl{50%{transform:rotate(-4deg) translateY(-8px)}}
+.box{padding:40px 8%;display:flex;flex-direction:column;justify-content:center}
+.tabs{display:flex;gap:8px;margin-bottom:18px}
+.tabs button{flex:1;padding:10px;border:1.5px solid var(--tl);background:#fff;color:var(--tl);font:inherit;font-weight:700;border-radius:8px;cursor:pointer}
+.tabs button.on{background:var(--tl);color:#fff}
+.card{background:#fff;border:1px solid var(--bd);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 8px 24px #0a25401a;animation:in .4s both}
+.f{margin-bottom:14px}label{display:block;font-weight:600;font-size:.92rem;margin-bottom:4px}
+input,select{width:100%;padding:11px 12px;border:1px solid #9fb2c5;border-radius:8px;font:inherit;background:#fff;color:var(--tx)}
+input[aria-invalid=true]{border-color:var(--rd);background:var(--rdL)}
+.err{display:block;color:var(--rd);font-size:.85rem}
+.btn{background:var(--tl);color:#fff;border:0;padding:11px 20px;border-radius:8px;font:inherit;font-weight:700;cursor:pointer;margin:0 8px 6px 0}
+.btn.alt{background:#fff;color:var(--tl);border:1.5px solid var(--tl)}.btn.red{background:var(--rd)}.btn:hover{filter:brightness(1.1)}
+:focus-visible{outline:3px solid #f59e0b;outline-offset:2px}
+.note{background:#fff8e1;border:1px solid #f2d27a;color:#6b4e00;padding:9px 12px;border-radius:10px;font-size:.88rem;margin-top:14px}
+.steps{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 20px}
+.steps li{flex:1;text-align:center;font-size:.8rem;color:var(--mut);border-top:4px solid var(--bd);padding-top:6px}
+.steps li.on{border-color:var(--tl);color:var(--tl);font-weight:700}.steps li.done{border-color:var(--nv);color:var(--nv)}
+.top{position:sticky;top:0;z-index:10;background:linear-gradient(90deg,var(--nv),var(--nv2));box-shadow:0 2px 10px #0a254033;color:#fff;display:flex;align-items:center;gap:12px;padding:10px 20px}
+.top .logo{font-size:1.3rem;flex:1}.top button{background:var(--nv2);color:#fff;border:0;border-radius:8px;padding:7px 14px;font:inherit;cursor:pointer}
+#burger{display:none}
+.shell{display:flex;min-height:calc(100vh - 54px)}
+aside{width:220px;background:#fff;border-right:1px solid var(--bd);padding:16px 10px;flex:none}
+aside a{display:block;padding:10px 12px;border-radius:8px;color:var(--tx);text-decoration:none;margin-bottom:4px;font-weight:600}
+aside a:hover{background:var(--bg)}aside a[aria-current=page]{background:var(--tlL);color:var(--tl)}
+main{flex:1;padding:24px;max-width:960px}.narrow{max-width:520px}
+.bal{background:linear-gradient(135deg,var(--nv),var(--tl));color:#fff;border-radius:18px;padding:26px;margin-bottom:18px;position:relative;overflow:hidden;box-shadow:0 12px 28px #0a254033}.bal:after{content:"";position:absolute;right:-40px;top:-50px;width:190px;height:190px;border-radius:50%;background:#ffffff1a}
+.bal small{opacity:.85}.bal b{display:block;font-size:2.1rem}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+.qa a{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px;text-align:center;color:var(--nv);font-weight:700;text-decoration:none}.qa a:hover{border-color:var(--tl)}
+.scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}th{background:#eef4f8;color:var(--nv)}.n{text-align:right}
+.b{padding:2px 8px;border-radius:99px;font-size:.78rem;font-weight:700}.b.in{background:var(--tlL);color:#08665c}.b.out{background:var(--rdL);color:var(--rd)}.b.mod{background:#e5ebf5;color:var(--nv2)}
+dl{display:grid;grid-template-columns:150px 1fr;gap:8px 12px}dt{color:var(--mut)}dd{margin:0;font-weight:600}
+.rev{background:var(--bg);border-radius:10px;padding:14px;margin-bottom:14px}
+.ok{text-align:center}.ok .tick{width:60px;height:60px;border-radius:50%;background:var(--tl);color:#fff;font-size:2rem;line-height:60px;margin:0 auto 10px}
+.radio{display:flex;gap:10px;margin-bottom:14px}.radio label{flex:1;border:1.5px solid var(--bd);border-radius:10px;padding:10px;text-align:center;cursor:pointer;margin:0}
+.radio input{width:auto;margin-right:6px}
+#toasts{position:fixed;right:16px;bottom:16px;z-index:50;display:flex;flex-direction:column;gap:8px}
+.t{padding:12px 16px;border-radius:10px;color:#fff;max-width:320px;animation:in .3s}.t.ok2{background:var(--tl)}.t.bad{background:var(--rd)}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+@media(max-width:820px){.auth{grid-template-columns:1fr}.hero{padding:30px 6%}.hero h2{font-size:1.8rem}.vcard{width:250px;animation:none}#burger{display:block}
+aside{position:fixed;top:54px;bottom:0;left:0;z-index:9;transform:translateX(-100%);transition:transform .25s}aside.open{transform:none}
+main{padding:16px}dl{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a2540"/><stop offset="1" stop-color="#0f9d8f"/></linearGradient></defs>
+<symbol id="logo" viewBox="0 0 48 48"><rect width="48" height="48" rx="13" fill="url(#lg)"/><path d="M13 36V12h4.6l9.8 14.2V12H32v24h-4.6L17.6 21.8V36z" fill="#fff"/><path d="M38.5 3l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5L32.5 9l4.5-1.5z" fill="#5eead4"/></symbol></svg>
+
+<!-- ===== LOGIN / OPEN ACCOUNT ===== -->
+<div class="auth" id="auth">
+ <div class="hero"><div class="logo"><svg class="lg" aria-hidden="true"><use href="#logo"/></svg><div>Nova<span>Bank</span></div></div><h2>Banking that feels <em>effortless</em></h2>
+ <p>Open an account, send money, track every transaction and manage your profile, all in one place.</p>
+ <div class="stats"><div><b>₹500</b>Minimum balance</div><div><b>4 steps</b>To open an account</div><div><b>24x7</b>Account access</div></div><div class="vcard" aria-hidden="true"><svg class="lg"><use href="#logo"/></svg><div class="chip"></div><div class="cn">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 1001</div><div class="cr"><span>NOVABANK</span><span>SAVINGS</span></div></div><p style="margin-top:36px;font-size:.8rem">&copy; 2026 NovaBank. All rights reserved.</p></div>
+ <div class="box"><div style="max-width:440px;width:100%;margin:auto">
+  <div class="tabs"><button class="on" id="tLogin" type="button">Login</button><button id="tOpen" type="button">Open Account</button><button id="tAdmin" type="button">Admin</button></div>
+  <div class="card" id="pLogin"><h2>Net Banking Login</h2>
+   <form id="fLogin" novalidate>
+    <div class="f"><label for="lNo">Account number</label><input id="lNo" inputmode="numeric" autocomplete="off"><small class="err" id="lNo-e"></small></div>
+    <div class="f"><label for="lPin">4-digit PIN</label><input id="lPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="lPin-e"></small></div>
+    <button class="btn">Login</button></form>
+   <p style="margin-top:14px;font-size:.88rem;color:var(--mut)">New customer? Choose <b>Open Account</b> above to get your account number.</p></div>
+  <div class="card" id="pAdmin" hidden><h2>Administrator Login</h2>
+   <form id="fAdmin" novalidate>
+    <div class="f"><label for="adId">Admin ID</label><input id="adId" autocomplete="off"><small class="err" id="adId-e"></small></div>
+    <div class="f"><label for="adPw">Password</label><input id="adPw" type="password" autocomplete="off"><small class="err" id="adPw-e"></small></div>
+    <button class="btn">Admin Login</button></form>
+   <p style="margin-top:14px;font-size:.88rem;color:var(--mut)">Authorised bank staff only. Administrators can view all customer accounts.</p></div>
+  <div class="card" id="pOpen" hidden><h2>Open a New Account</h2>
+   <ol class="steps" id="oSt"><li>Details</li><li>PIN</li><li>Deposit</li><li>Review</li></ol>
+   <form id="fOpen" novalidate>
+    <div data-s="1"><div class="f"><label for="oName">Full name</label><input id="oName" maxlength="40" autocomplete="off"><small class="err" id="oName-e"></small></div>
+     <div class="f"><label for="oType">Account type</label><select id="oType"><option>Savings</option><option>Current</option></select></div></div>
+    <div data-s="2" hidden><div class="f"><label for="oPin">Create 4-digit PIN</label><input id="oPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="oPin-e"></small></div>
+     <div class="f"><label for="oPin2">Confirm PIN</label><input id="oPin2" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="oPin2-e"></small></div></div>
+    <div data-s="3" hidden><div class="f"><label for="oAmt">Opening deposit (₹, minimum 500)</label><input id="oAmt" inputmode="decimal" autocomplete="off"><small class="err" id="oAmt-e"></small></div></div>
+    <div data-s="4" hidden><div class="rev" id="oRev"></div></div>
+    <div data-s="5" hidden class="ok"><div class="tick">&#10003;</div><h2>Account opened!</h2><p id="oDone"></p></div>
+    <div id="oBtns"><button class="btn alt" type="button" id="oBack">Back</button><button class="btn" id="oNext">Next</button></div>
+   </form></div>
+ </div></div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app" hidden>
+ <header class="top"><button id="burger" aria-label="Menu" aria-expanded="false">&#9776;</button><div class="logo"><svg class="lg" aria-hidden="true"><use href="#logo"/></svg><div>Nova<span>Bank</span></div></div><span id="who"></span><button id="out">Logout</button></header>
+ <div class="shell">
+ <aside id="side"><nav aria-label="Main"><a class="cu" href="#home">Dashboard</a><a class="cu" href="#send">Transfer</a><a class="cu" href="#cash">Deposit / Withdraw</a><a class="cu" href="#stmt">Statement</a><a class="cu" href="#me">My Account</a><a class="ad" href="#all" hidden>All Accounts</a></nav></aside>
+ <main>
+  <section id="p-home"><h1>Welcome, <span id="hName"></span></h1><p class="sub">Account <span id="hNo"></span> &middot; <span id="hType"></span></p>
+   <div class="bal"><small>Available balance</small><b id="hBal"></b></div>
+   <div class="qa"><a href="#send">&#8599; Send Money</a><a href="#cash">&#8645; Deposit / Withdraw</a><a href="#stmt">&#9776; View Statement</a></div>
+   <div class="card"><h2>Recent transactions</h2><div class="scroll"><table><thead class="th"></thead><tbody id="hRec"></tbody></table></div></div></section>
+
+  <section id="p-send" hidden class="narrow"><h1>Transfer Money</h1><p class="sub">Keep at least ₹500 in your account.</p>
+   <div class="card"><ol class="steps" id="tSt"><li>Details</li><li>Review</li><li>Confirm</li></ol>
+   <form id="fSend" novalidate>
+    <div data-s="1"><div class="f"><label for="sTo">Receiver account number</label><input id="sTo" inputmode="numeric" autocomplete="off"><small class="err" id="sTo-e"></small></div>
+     <div class="f"><label for="sAmt">Amount (₹)</label><input id="sAmt" inputmode="decimal" autocomplete="off"><small class="err" id="sAmt-e"></small></div></div>
+    <div data-s="2" hidden><div class="rev" id="sRev"></div></div>
+    <div data-s="3" hidden><div class="f"><label for="sPin">Enter your PIN to confirm</label><input id="sPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="sPin-e"></small></div></div>
+    <div data-s="4" hidden class="ok"><div class="tick">&#10003;</div><h2>Transfer successful</h2><p id="sDone"></p></div>
+    <div id="sBtns"><button class="btn alt" type="button" id="sBack">Back</button><button class="btn" id="sNext">Continue</button></div>
+   </form></div></section>
+
+  <section id="p-cash" hidden class="narrow"><h1>Deposit / Withdraw</h1><p class="sub">Withdrawals must leave at least ₹500.</p>
+   <div class="card"><form id="fCash" novalidate>
+    <div class="radio"><label><input type="radio" name="ct" value="dep" checked>Deposit</label><label><input type="radio" name="ct" value="wd">Withdraw</label></div>
+    <div class="f"><label for="cAmt">Amount (₹)</label><input id="cAmt" inputmode="decimal" autocomplete="off"><small class="err" id="cAmt-e"></small></div>
+    <div class="f"><label for="cPin">PIN</label><input id="cPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="cPin-e"></small></div>
+    <button class="btn">Submit</button></form></div></section>
+
+  <section id="p-stmt" hidden><h1>Account Statement</h1><p class="sub">All activity on your account.</p>
+   <div class="card"><div class="f" style="max-width:220px"><label for="fT">Filter by type</label><select id="fT"><option value="">All</option><option>OPEN</option><option>DEPOSIT</option><option>WITHDRAW</option><option>TRANSFER-IN</option><option>TRANSFER-OUT</option><option>MODIFY</option></select></div>
+   <div class="scroll"><table><thead class="th"></thead><tbody id="stB"></tbody></table></div></div></section>
+
+  <section id="p-all" hidden><h1>All Accounts</h1><p class="sub" id="aTot"></p>
+   <div class="card"><div class="f" style="max-width:280px"><label for="aQ">Search accounts</label><input id="aQ" placeholder="Number, name or type" autocomplete="off"></div>
+   <div class="scroll"><table><thead><tr><th>Acc no.</th><th>Holder</th><th>Type</th><th class="n">Balance</th><th>Opened</th></tr></thead><tbody id="aB"></tbody></table></div></div></section>
+
+  <section id="p-me" hidden class="narrow"><h1>My Account</h1><p class="sub">Your account details and settings.</p>
+   <div class="card"><dl id="meD"></dl></div>
+   <div class="card"><h2>Update profile</h2><form id="fMod" novalidate>
+    <div class="f"><label for="mName">Full name</label><input id="mName" maxlength="40" autocomplete="off"><small class="err" id="mName-e"></small></div>
+    <div class="f"><label for="mType">Account type</label><select id="mType"><option>Savings</option><option>Current</option></select></div>
+    <div class="f"><label for="mNew">New PIN (leave blank to keep current)</label><input id="mNew" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="mNew-e"></small></div>
+    <div class="f"><label for="mPin">Current PIN</label><input id="mPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="mPin-e"></small></div>
+    <button class="btn">Save changes</button></form></div>
+   <div class="card"><h2>Close account</h2><p class="sub">This permanently closes your account.</p><form id="fClose" novalidate>
+    <div class="f"><label for="xPin">Enter PIN to confirm</label><input id="xPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"><small class="err" id="xPin-e"></small></div>
+    <button class="btn red">Close account</button></form></div></section>
+ </main></div>
+</div>
+<div id="toasts" aria-live="polite"></div>
+
+<script>
+const KEY="novabank_v2",MIN=500,$=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const inr=n=>"₹"+Number(n).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fdt=t=>new Date(t).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
+const r2=n=>Math.round(n*100)/100,num=s=>/^\d+(\.\d{1,2})?$/.test(s.trim())?parseFloat(s):NaN;
+const NAME=/^\p{L}[\p{L} .'-]{1,39}$/u;
+function hash(s){let a=0xdeadbeef,b=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);a=Math.imul(a^c,2654435761);b=Math.imul(b^c,1597334677)}
+a=Math.imul(a^(a>>>16),2246822507)^Math.imul(b^(b>>>13),3266489909);b=Math.imul(b^(b>>>16),2246822507)^Math.imul(a^(a>>>13),3266489909);return(4294967296*(2097151&b)+(a>>>0)).toString(36)}
+const salt=()=>Math.random().toString(36).slice(2,8);
+function seed(){const d={accs:[],tx:[],next:1001},n=Date.now(),D=864e5;
+ const mk=(nm,ty,b,t)=>{const s=salt(),a={no:d.next++,name:nm,type:ty,salt:s,ph:hash(s+"1234"),bal:b,date:t};d.accs.push(a);d.tx.push({t,no:a.no,type:"OPEN",amt:b,bal:b,det:"Account opened"});return a};
+ const mv=(a,type,amt,det,t,sg)=>{a.bal=r2(a.bal+sg*amt);d.tx.push({t,no:a.no,type,amt,bal:a.bal,det})};
+ const a=mk("Aarav Sharma","Savings",25000,n-20*D),b=mk("Priya Nair","Current",60000,n-15*D);
+ mv(a,"DEPOSIT",5000,"Cash deposit",n-10*D,1);mv(b,"TRANSFER-OUT",4000,"To A/C "+a.no,n-5*D,-1);mv(a,"TRANSFER-IN",4000,"From A/C "+b.no,n-5*D,1);
+ mv(a,"WITHDRAW",2000,"Cash withdrawal",n-2*D,-1);d.tx.sort((x,y)=>x.t-y.t);return d}
+let db=null;try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!db||!Array.isArray(db.accs)||!Array.isArray(db.tx)){db={accs:[],tx:[],next:1001};save()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+function log(a,type,amt,det){db.tx.push({t:Date.now(),no:a.no,type,amt,bal:a.bal,det})}
+function toast(m,ok=true){const t=document.createElement("div");t.className="t "+(ok?"ok2":"bad");t.textContent=m;$("toasts").appendChild(t);setTimeout(()=>t.remove(),4000)}
+function err(id,m){$(id+"-e").textContent=m||"";m?$(id).setAttribute("aria-invalid","true"):$(id).removeAttribute("aria-invalid")}
+const clr=(...ids)=>ids.forEach(i=>err(i,""));
+let cur=null;try{cur=+sessionStorage.getItem("nb_cur")||null}catch(e){}
+const me=()=>db.accs.find(a=>a.no===cur);
+const pinOk=(a,v)=>/^\d{4}$/.test(v)&&hash(a.salt+v)===a.ph;
+
+function steps(form,st,n){document.querySelectorAll("#"+form+" [data-s]").forEach(p=>p.hidden=+p.dataset.s!==n);
+ [...$(st).children].forEach((li,i)=>li.className=i+1<n?"done":i+1===n?"on":"")}
+
+/* ---------- login ---------- */
+const AH="12pai71z157";let admin=false;try{admin=sessionStorage.getItem("nb_admin")==="1"}catch(e){}
+function tab(n){["Login","Open","Admin"].forEach(k=>{$("p"+k).hidden=k!==n;$("t"+k).className=k===n?"on":""});if(n==="Open")oGo(1)}
+$("tLogin").onclick=()=>tab("Login");$("tOpen").onclick=()=>tab("Open");$("tAdmin").onclick=()=>tab("Admin");
+$("fAdmin").onsubmit=e=>{e.preventDefault();clr("adId","adPw");
+ if($("adId").value.trim()!=="admin"||hash("admin:"+$("adPw").value)!==AH)return err("adPw","Invalid admin ID or password.");
+ admin=true;cur=null;try{sessionStorage.setItem("nb_admin","1");sessionStorage.removeItem("nb_cur")}catch(x){}$("adPw").value="";start();toast("Administrator login successful.")};
+$("fLogin").onsubmit=e=>{e.preventDefault();clr("lNo","lPin");const ns=$("lNo").value.trim(),pn=$("lPin").value;let ok=true,a=null;
+ if(!/^\d+$/.test(ns)){err("lNo","Enter a valid account number.");ok=false}else{a=db.accs.find(x=>x.no===+ns);if(!a){err("lNo","Account not found.");ok=false}}
+ if(!/^\d{4}$/.test(pn)){err("lPin","PIN must be 4 digits.");ok=false}else if(a&&!pinOk(a,pn)){err("lPin","Incorrect PIN.");ok=false}
+ if(!ok)return;admin=false;cur=a.no;try{sessionStorage.setItem("nb_cur",cur)}catch(x){}$("lPin").value="";start();toast("Login successful.")};
+$("out").onclick=()=>{cur=null;admin=false;try{sessionStorage.removeItem("nb_cur");sessionStorage.removeItem("nb_admin")}catch(x){}$("app").hidden=true;$("auth").hidden=false;$("tLogin").click()};
+
+/* ---------- open account wizard ---------- */
+let oS=1;
+function oGo(n){oS=n;steps("fOpen","oSt",n);$("oBack").hidden=n===1||n===5;$("oNext").textContent=n===4?"Open Account":"Next";$("oBtns").hidden=n===5}
+$("oBack").onclick=()=>oGo(oS-1);
+$("fOpen").onsubmit=e=>{e.preventDefault();clr("oName","oPin","oPin2","oAmt");
+ if(oS===1){const nm=$("oName").value.trim().replace(/\s+/g," "),ty=$("oType").value;
+  if(!NAME.test(nm))return err("oName","Enter 2-40 letters (spaces, . ' - allowed).");
+  if(db.accs.some(a=>a.name.toLowerCase()===nm.toLowerCase()&&a.type===ty))return err("oName","You already have a "+ty+" account.");return oGo(2)}
+ if(oS===2){if(!/^\d{4}$/.test($("oPin").value))return err("oPin","PIN must be exactly 4 digits.");
+  if($("oPin2").value!==$("oPin").value)return err("oPin2","PINs do not match.");return oGo(3)}
+ if(oS===3){const v=num($("oAmt").value);if(isNaN(v)||v<MIN)return err("oAmt","Minimum opening deposit is "+inr(MIN)+".");
+  $("oRev").innerHTML="<dl><dt>Name</dt><dd>"+esc($("oName").value.trim())+"</dd><dt>Type</dt><dd>"+$("oType").value+"</dd><dt>Opening deposit</dt><dd>"+inr(v)+"</dd></dl>";return oGo(4)}
+ if(oS===4){const s=salt(),a={no:db.next++,name:$("oName").value.trim().replace(/\s+/g," "),type:$("oType").value,salt:s,ph:hash(s+$("oPin").value),bal:num($("oAmt").value),date:Date.now()};
+  db.accs.push(a);log(a,"OPEN",a.bal,"Account opened");save();$("oDone").textContent="Your account number is "+a.no+". Use it with your PIN to log in.";
+  e.target.reset();oGo(5);toast("Account created.")}};
+
+/* ---------- transfer wizard ---------- */
+let tS=1,tR=null,tA=0;
+function tGo(n){tS=n;steps("fSend","tSt",n);$("sBack").hidden=n===1||n===4;$("sNext").textContent=n===3?"Confirm Transfer":"Continue";$("sBtns").hidden=n===4}
+$("sBack").onclick=()=>tGo(tS-1);
+$("fSend").onsubmit=e=>{e.preventDefault();clr("sTo","sAmt","sPin");const a=me();
+ if(tS===1){const ts=$("sTo").value.trim(),v=num($("sAmt").value);let ok=true;
+  if(!/^\d+$/.test(ts)){err("sTo","Enter a valid account number.");ok=false}else{tR=db.accs.find(x=>x.no===+ts);
+   if(!tR){err("sTo","Receiver account not found.");ok=false}else if(tR.no===a.no){err("sTo","You cannot transfer to your own account.");ok=false}}
+  if(!(v>0)){err("sAmt","Enter an amount greater than ₹0.");ok=false}else if(r2(a.bal-v)<MIN){err("sAmt","You must keep at least "+inr(MIN)+". Maximum transfer: "+inr(Math.max(0,a.bal-MIN))+".");ok=false}
+  if(!ok)return;tA=v;$("sRev").innerHTML="<dl><dt>From</dt><dd>"+a.no+"</dd><dt>To</dt><dd>"+tR.no+" ("+esc(tR.name)+")</dd><dt>Amount</dt><dd>"+inr(v)+"</dd></dl>";return tGo(2)}
+ if(tS===2)return tGo(3);
+ if(tS===3){if(!pinOk(a,$("sPin").value))return err("sPin","Incorrect PIN.");
+  a.bal=r2(a.bal-tA);tR.bal=r2(tR.bal+tA);log(a,"TRANSFER-OUT",tA,"To A/C "+tR.no);log(tR,"TRANSFER-IN",tA,"From A/C "+a.no);save();
+  $("sDone").textContent=inr(tA)+" sent to account "+tR.no+". New balance: "+inr(a.bal)+".";e.target.reset();paint();tGo(4);toast("Transfer successful.")}};
+
+/* ---------- deposit / withdraw ---------- */
+$("fCash").onsubmit=e=>{e.preventDefault();clr("cAmt","cPin");const a=me(),v=num($("cAmt").value),dep=e.target.ct.value==="dep";let ok=true;
+ if(!(v>0)){err("cAmt","Enter an amount greater than ₹0.");ok=false}else if(!dep&&r2(a.bal-v)<MIN){err("cAmt","₹500 must remain. You can withdraw up to "+inr(Math.max(0,a.bal-MIN))+".");ok=false}
+ if(!pinOk(a,$("cPin").value)){err("cPin","Incorrect PIN.");ok=false}
+ if(!ok)return;a.bal=r2(a.bal+(dep?v:-v));log(a,dep?"DEPOSIT":"WITHDRAW",v,dep?"Cash deposit":"Cash withdrawal");save();paint();e.target.reset();
+ toast((dep?"Deposited ":"Withdrew ")+inr(v)+". Balance: "+inr(a.bal))};
+
+$("fMod").onsubmit=e=>{e.preventDefault();clr("mName","mNew","mPin");const a=me(),nm=$("mName").value.trim().replace(/\s+/g," "),ty=$("mType").value,np=$("mNew").value;let ok=true;
+ if(!NAME.test(nm)){err("mName","Enter 2-40 letters (spaces, . ' - allowed).");ok=false}else if(db.accs.some(x=>x.no!==a.no&&x.name.toLowerCase()===nm.toLowerCase()&&x.type===ty)){err("mName","You already have a "+ty+" account.");ok=false}
+ if(np&&!/^\d{4}$/.test(np)){err("mNew","PIN must be exactly 4 digits.");ok=false}
+ if(!pinOk(a,$("mPin").value)){err("mPin","Incorrect PIN.");ok=false}
+ if(!ok)return;const ch=[];
+ if(nm!==a.name){a.name=nm;ch.push("name")}if(ty!==a.type){a.type=ty;ch.push("type")}if(np){a.salt=salt();a.ph=hash(a.salt+np);ch.push("PIN")}
+ if(!ch.length)return toast("No changes were made.",false);
+ log(a,"MODIFY",0,"Changed "+ch.join(", "));save();paint();$("mPin").value="";$("mNew").value="";toast("Profile updated.")};
+$("fClose").onsubmit=e=>{e.preventDefault();clr("xPin");const a=me();if(!pinOk(a,$("xPin").value))return err("xPin","Incorrect PIN.");
+ if(!confirm("Close account "+a.no+"? This cannot be undone."))return;
+ db.tx.push({t:Date.now(),no:a.no,type:"CLOSE",amt:a.bal,bal:0,det:"Account closed"});db.accs=db.accs.filter(x=>x.no!==a.no);save();$("xPin").value="";$("out").click();toast("Your account has been closed.")};
+
+/* ---------- views ---------- */
+const TH="<tr><th>Date &amp; time</th><th>Type</th><th class='n'>Amount</th><th class='n'>Balance</th><th>Details</th></tr>";
+document.querySelectorAll(".th").forEach(t=>t.innerHTML=TH);
+const rows=l=>l.length?l.map(x=>`<tr><td>${fdt(x.t)}</td><td><span class="b ${/IN$|OPEN|DEPOSIT/.test(x.type)?"in":x.type==="MODIFY"?"mod":"out"}">${x.type}</span></td><td class="n">${inr(x.amt)}</td><td class="n">${inr(x.bal)}</td><td>${esc(x.det)}</td></tr>`).join(""):'<tr><td colspan="5">No transactions found.</td></tr>';
+function paint(){const a=me();
+ const q=$("aQ").value.trim().toLowerCase(),L=db.accs.filter(x=>!q||String(x.no).includes(q)||x.name.toLowerCase().includes(q)||x.type.toLowerCase().includes(q));
+ $("aB").innerHTML=L.length?L.map(x=>`<tr><td>${x.no}</td><td>${esc(x.name)}</td><td>${x.type}</td><td class="n">${inr(x.bal)}</td><td>${new Date(x.date).toLocaleDateString("en-IN",{dateStyle:"medium"})}</td></tr>`).join(""):'<tr><td colspan="5">No accounts found.</td></tr>';
+ $("aTot").textContent="Total accounts: "+db.accs.length+"  |  Total deposits: "+inr(db.accs.reduce((t,x)=>t+x.bal,0));
+ if(!a)return;$("who").textContent=a.name;$("hName").textContent=a.name.split(" ")[0];$("hNo").textContent=a.no;$("hType").textContent=a.type;$("hBal").textContent=inr(a.bal);
+ const l=db.tx.filter(x=>x.no===a.no).reverse();$("hRec").innerHTML=rows(l.slice(0,5));
+ const t=$("fT").value;$("stB").innerHTML=rows(l.filter(x=>!t||x.type===t));
+ $("meD").innerHTML=`<dt>Account number</dt><dd>${a.no}</dd><dt>Holder name</dt><dd>${esc(a.name)}</dd><dt>Account type</dt><dd>${a.type}</dd><dt>Balance</dt><dd>${inr(a.bal)}</dd><dt>Opened on</dt><dd>${new Date(a.date).toLocaleDateString("en-IN",{dateStyle:"medium"})}</dd>`}
+$("fT").onchange=paint;$("aQ").oninput=paint;
+
+/* ---------- navigation ---------- */
+const PG=["home","send","cash","stmt","all","me"];
+function go(){if(!admin&&(!cur||!me()))return;let p=location.hash.slice(1);if(admin)p="all";else if(!PG.includes(p)||p==="all")p="home";
+ PG.forEach(x=>$("p-"+x).hidden=x!==p);
+ document.querySelectorAll("aside a").forEach(a=>a.getAttribute("href")==="#"+p?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+ if(p==="send")tGo(1);if(p==="me"){$("mName").value=me().name;$("mType").value=me().type}$("side").classList.remove("open");$("burger").setAttribute("aria-expanded","false");paint();window.scrollTo(0,0)}
+function start(){$("auth").hidden=true;$("app").hidden=false;document.querySelectorAll(".cu").forEach(x=>x.hidden=admin);document.querySelectorAll(".ad").forEach(x=>x.hidden=!admin);if(admin)$("who").textContent="Administrator";location.hash=admin?"#all":"#home";go()}
+$("burger").onclick=()=>{const o=$("side").classList.toggle("open");$("burger").setAttribute("aria-expanded",o)};
+window.addEventListener("hashchange",go);
+oGo(1);tGo(1);
+if(admin||(cur&&me()))start();
+</script>
+</body>
+</html>
